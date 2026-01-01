@@ -1,0 +1,12 @@
+<div class="title">Umbuchung</div>
+$message
+<form method="post" action="/move" class="stack">
+<select name="from_iban">
+$options
+</select>
+<select name="to_iban">
+$options
+</select>
+<input name="amount" placeholder="Betrag in Euro">
+<div class="btn" onclick="this.parentNode.submit()">Umbuchen</div>
+</form>

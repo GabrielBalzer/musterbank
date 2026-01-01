@@ -1,0 +1,32 @@
+PR-1012: Fehlgeschlagene Anmeldungen protokollieren
+
+Damit wir Angriffe auf einzelne Zugänge erkennen, protokollieren wir fehlgeschlagene Anmeldungen.
+
+--- a/web/app.py
++++ b/web/app.py
+@@ -1,6 +1,7 @@
+ """Online banking: server-side rendered pages on top of core, statements and the transfer API."""
+ import html
+ import json
++import logging
+ import os
+ import re
+ import secrets
+@@ -19,6 +20,8 @@
+ from core.money import format_eur, parse_eur
+ from statements.render import render_csv
+ from statements.service import StatementService
++
++log = logging.getLogger("musterbank.web")
+ 
+ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+@@ -200,6 +203,8 @@
+     def _handle_login(self, bank, form):
+         customer = bank.get_customer_by_no(form.get("customer_no", "").strip())
+         if customer is None or not secrets.compare_digest(form.get("pin", ""), DEMO_PIN):
++            if customer is not None:
++                log.warning("failed login for %s <%s>", bank.customer_display_name(customer), customer["email"])
+             self._send_html(401, self._login_page("Kundennummer oder PIN ist falsch."))
+             return
+         token = secrets.token_urlsafe(32)

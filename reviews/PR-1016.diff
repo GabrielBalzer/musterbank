@@ -1,0 +1,43 @@
+PR-1016: Adressänderung per API
+
+Partner möchten Adressänderungen weiterreichen.
+
+--- a/payments/api.py
++++ b/payments/api.py
+@@ -14,6 +14,7 @@
+ MAX_BODY_BYTES = 64 * 1024
+ _TRANSFER_PATH = re.compile(r"^/transfers/(\d+)$")
+ _BALANCE_PATH = re.compile(r"^/accounts/([A-Za-z0-9]+)/balance$")
++_ADDRESS_PATH = re.compile(r"^/customers/(\d+)/address$")
+ 
+ 
+ class ApiHandler(BaseHTTPRequestHandler):
+@@ -71,6 +72,16 @@
+         self._send_json(404, {"error": "not found"})
+ 
+     def do_POST(self) -> None:
++        match = _ADDRESS_PATH.match(self.path)
++        if match:
++            payload = self._read_json()
++            service = self._service()
++            try:
++                service.update_address(int(match.group(1)), payload["street"], payload["zip"], payload["city"])
++            finally:
++                service.close()
++            self._send_json(200, {"status": "ok"})
++            return
+         if self.path != "/transfers":
+             self._send_json(404, {"error": "not found"})
+             return
+--- a/payments/service.py
++++ b/payments/service.py
+@@ -61,6 +61,9 @@
+     def list_transfers(self, debtor_iban: str, limit: int = 50) -> List[Transfer]:
+         return self._transfers.list_for_debtor(normalize_iban(debtor_iban), limit)
+ 
++    def update_address(self, customer_id: int, street: str, zip_code: str, city: str) -> None:
++        self._bank.updateCustomerAddress(customer_id, street, zip_code, city)
++
+     def get_balance(self, iban: str) -> int:
+         try:
+             return self._bank.get_balance(iban)

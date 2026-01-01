@@ -1,0 +1,19 @@
+PR-1003: Durchschnittliche Monatsausgaben in der Jahresübersicht
+
+Die Jahresübersicht zeigt zusätzlich, wie viel im Schnitt pro Monat abgeflossen ist.
+
+--- a/statements/service.py
++++ b/statements/service.py
+@@ -88,9 +88,12 @@
+                 "debits_cents": statement["debits_cents"],
+                 "closing_cents": statement["closing_cents"],
+             })
++        total_debits = sum(m["debits_cents"] for m in months) / 100.0
++        average_debit = round(total_debits / 12, 2)
+         return {
+             "iban": iban,
+             "year": year,
+             "months": months,
++            "average_debit_eur": average_debit,
+             "interest_cents": self.bank.interest_booked(iban, year),
+         }

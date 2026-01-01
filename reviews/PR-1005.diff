@@ -1,0 +1,22 @@
+PR-1005: Sofortüberweisung als eigener Endpunkt
+
+Partner möchten Sofortüberweisungen klar von normalen Überweisungen trennen. Neuer Endpunkt, gleiche Buchungslogik.
+
+--- a/payments/api.py
++++ b/payments/api.py
+@@ -71,6 +71,15 @@
+         self._send_json(404, {"error": "not found"})
+ 
+     def do_POST(self) -> None:
++        if self.path == "/transfers/instant":
++            try:
++                request = TransferRequest.from_json(self._read_json())
++            except ValidationError as exc:
++                self._send_json(400, {"error": str(exc)})
++                return
++            status, payload = self._create_transfer(request)
++            self._send_json(status, payload)
++            return
+         if self.path != "/transfers":
+             self._send_json(404, {"error": "not found"})
+             return

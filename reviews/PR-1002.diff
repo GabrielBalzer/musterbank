@@ -1,0 +1,18 @@
+PR-1002: Kundensuche nach Ort
+
+Die Sachbearbeitung möchte Kunden nach Wohnort filtern. Ergänzt die Suche in `BankCore`.
+
+--- a/core/bank.py
++++ b/core/bank.py
+@@ -91,6 +91,11 @@
+             "SELECT * FROM customers WHERE last_name LIKE ? OR first_name LIKE ? OR company_name LIKE ?"
+             " ORDER BY id",
+             (pattern, pattern, pattern),
++        ).fetchall()
++
++    def find_customers_by_city(self, city):
++        return self.db.execute(
++            f"SELECT * FROM customers WHERE city = '{city}' ORDER BY id"
+         ).fetchall()
+ 
+     def listCustomers(self, limit=100, offset=0):

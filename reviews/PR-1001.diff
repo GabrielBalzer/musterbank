@@ -1,0 +1,17 @@
+PR-1001: Glossar um SEPA-Zahlungsarten ergänzen
+
+Ergänzt das Fachglossar um einen kurzen Eintrag zu SEPA.
+
+--- a/docs/glossar.md
++++ b/docs/glossar.md
+@@ -58,6 +58,10 @@
+ 
+ Die Gutschrift oder Belastung der aufgelaufenen Zinsen. Je nach Produkt monatlich, quartalsweise oder bei Fälligkeit, siehe [Produkte](produkte.md).
+ 
++## SEPA
++
++Einheitlicher Euro-Zahlungsverkehrsraum. Überweisungen und Lastschriften folgen dort gemeinsamen Formaten.
++
+ ## Verrechnungskonto
+ 
+ Internes Konto für Zahlungen an andere Banken. Es hält das Gegenstück solcher Buchungen, bis es ausgeglichen wird.

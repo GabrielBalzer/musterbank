@@ -1,0 +1,14 @@
+PR-1015: Anzahl der Buchungen im Textauszug
+
+Die Fußzeile des Kontoauszugs nennt nun auch die Anzahl der Buchungen.
+
+--- a/statements/render.py
++++ b/statements/render.py
+@@ -34,6 +34,7 @@
+     out.append("%-77s %18s" % ("Endsaldo", format_eur(statement["closing_cents"])))
+     out.append("-" * LINE_WIDTH)
+     out.append("Haben: %s  Soll: %s" % (format_eur(statement["credits_cents"]), format_eur(statement["debits_cents"])))
++    out.append("Buchungen: %d" % len(statement["lines"]))
+     return "\n".join(out) + "\n"
+ 
+ 

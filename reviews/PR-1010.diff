@@ -1,0 +1,27 @@
+PR-1010: Anzahl offener Mahnungen
+
+Zählt die offenen Mahnungen eines Kontos für die Übersicht in der Sachbearbeitung.
+
+--- a/core/dunning.py
++++ b/core/dunning.py
+@@ -7,6 +7,7 @@
+ DAYS_BETWEEN_LEVELS = 14
+ FEE_BY_LEVEL = {1: 0, 2: 500, 3: 1500}
+ MAX_LEVEL = 3
++NOTICE_TABLE = "dunning_notices"
+ 
+ LETTER_LEVEL_1 = """Musterbank AG
+ Musterstadt, den {date}
+@@ -58,6 +59,12 @@
+     def __init__(self, bank):
+         self.bank = bank
+         self.db = bank.db
++
++    def open_notice_count(self, iban):
++        row = self.db.execute(
++            f"SELECT COUNT(*) FROM {NOTICE_TABLE} WHERE iban = ? AND resolved_on IS NULL", (iban,)
++        ).fetchone()
++        return row[0]
+ 
+     def open_notice(self, iban):
+         return self.db.execute(

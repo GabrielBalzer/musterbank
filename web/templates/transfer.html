@@ -1,0 +1,12 @@
+<div class="title">Überweisung</div>
+$message
+<form method="post" action="/transfer" class="stack">
+<select name="debtor_iban">
+$options
+</select>
+<input name="creditor_name" value="$creditor_name" placeholder="Empfänger">
+<input name="creditor_iban" value="$creditor_iban" placeholder="IBAN des Empfängers">
+<input name="amount" value="$amount" placeholder="Betrag in Euro">
+<input name="purpose" value="$purpose" placeholder="Verwendungszweck" maxlength="140">
+<div class="btn" onclick="this.parentNode.submit()">Überweisen</div>
+</form>

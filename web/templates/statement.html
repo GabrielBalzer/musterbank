@@ -1,0 +1,13 @@
+<div class="title">Kontoauszug $month</div>
+<p>Konto $iban_display</p>
+<form method="get" action="/statements/$iban" class="inline">
+<input name="month" value="$month" placeholder="Monat">
+<div class="btn" onclick="this.parentNode.submit()">Anzeigen</div>
+</form>
+<p><a href="/statements/$iban?month=$month&amp;format=csv">Als CSV herunterladen</a></p>
+<p>Weitere Monate: $month_links</p>
+<p>Anfangssaldo: <strong>$opening</strong>, Endsaldo: <strong>$closing</strong></p>
+<table>
+<tr class="head"><td>Buchung</td><td>Valuta</td><td>Name</td><td>Verwendungszweck</td><td class="num">Betrag</td></tr>
+$rows
+</table>

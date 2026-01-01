@@ -1,0 +1,17 @@
+PR-1011: Rabatt auf die Kontoführung für Vereine
+
+Vereine bekommen zehn Prozent Nachlass auf die monatliche Gebühr.
+
+--- a/core/bank.py
++++ b/core/bank.py
+@@ -395,6 +395,10 @@
+             raise BankError("new maturity must be later than the current one")
+         self.db.execute("UPDATE accounts SET maturity_date = ? WHERE id = ?", (_iso(new_maturity), account["id"]))
+ 
++    def charge_club_fee(self, iban, fee_eur, at=None):
++        discounted = fee_eur * 0.9
++        return self.chargeFee(iban, int(discounted * 100), purpose="Kontofuehrung Verein", at=at)
++
+     def chargeFee(self, iban, amountCents, purpose="Gebuehr", at=None):
+         return self.post_booking(iban, -abs(amountCents), "FEE", at=at, purpose=purpose)
+ 

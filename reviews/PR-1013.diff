@@ -1,0 +1,18 @@
+PR-1013: Status der Dienste mit Prozess-ID
+
+`run.py status` zeigt zusätzlich die Prozess-ID, das hilft beim Beenden hängender Dienste.
+
+--- a/run.py
++++ b/run.py
+@@ -160,8 +160,9 @@
+ 
+ def cmd_status(_args):
+     for name, service in SERVICES.items():
+-        state = "läuft" if _is_running(_read_pid(name)) else "gestoppt"
+-        print("%-9s %-9s Port %d" % (name, state, service["port"]))
++        pid = _read_pid(name)
++        state = "läuft" if _is_running(pid) else "gestoppt"
++        print("%-9s %-9s Port %d  PID %s" % (name, state, service["port"], pid or "-"))
+ 
+ 
+ def _copy_database(source, target):

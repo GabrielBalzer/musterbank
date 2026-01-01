@@ -1,0 +1,10 @@
+<div class="title">Meine Daten</div>
+<p>Kundennummer: $customer_no</p>
+$message
+<form method="post" action="/profile" class="stack">
+<input name="street" value="$street" placeholder="Straße und Hausnummer">
+<input name="zip" value="$zip_code" placeholder="Postleitzahl">
+<input name="city" value="$city" placeholder="Ort">
+<input name="email" value="$email" placeholder="E-Mail">
+<div class="btn" onclick="this.parentNode.submit()">Speichern</div>
+</form>

@@ -1,0 +1,29 @@
+PR-1007: Protokollierung ausgeführter Überweisungen
+
+Für die Fehlersuche fehlten uns im Log Angaben zu ausgeführten Überweisungen.
+
+--- a/payments/service.py
++++ b/payments/service.py
+@@ -1,4 +1,5 @@
+ """Transfer use cases on top of the core bank."""
++import logging
+ from typing import List, Optional
+ 
+ from core.bank import BankCore
+@@ -8,6 +9,8 @@
+ from core.money import to_cents
+ from payments.models import Transfer, TransferRequest, ValidationError
+ from payments.repository import STATUS_EXECUTED, TransferRepository
++
++log = logging.getLogger("musterbank.payments")
+ 
+ 
+ class TransferRejected(Exception):
+@@ -53,6 +56,7 @@
+             raise TransferRejected(type(exc).__name__) from exc
+         transfer = self._transfers.get(transfer_id)
+         assert transfer is not None
++        log.info("transfer %d from %s to %s (%s)", transfer_id, debtor, creditor, request.creditor_name)
+         return transfer
+ 
+     def get_transfer(self, transfer_id: int) -> Optional[Transfer]:

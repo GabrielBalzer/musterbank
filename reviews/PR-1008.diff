@@ -1,0 +1,32 @@
+PR-1008: Abgelehnte Überweisungen im Log
+
+Macht sichtbar, wie oft Überweisungen mangels Deckung scheitern.
+
+--- a/payments/service.py
++++ b/payments/service.py
+@@ -1,13 +1,16 @@
+ """Transfer use cases on top of the core bank."""
++import logging
+ from typing import List, Optional
+ 
+ from core.bank import BankCore
+ from core.dates import utc_now
+ from core.errors import AccountNotActive, InsufficientFunds, InvalidIban, UnknownAccount
+-from core.iban import normalize_iban, validate_iban
++from core.iban import mask_iban, normalize_iban, validate_iban
+ from core.money import to_cents
+ from payments.models import Transfer, TransferRequest, ValidationError
+ from payments.repository import STATUS_EXECUTED, TransferRepository
++
++log = logging.getLogger("musterbank.payments")
+ 
+ 
+ class TransferRejected(Exception):
+@@ -50,6 +53,7 @@
+         except UnknownAccount as exc:
+             raise AccountNotFound(str(exc)) from exc
+         except (InsufficientFunds, AccountNotActive, InvalidIban) as exc:
++            log.info("transfer rejected for %s: %s", mask_iban(debtor), type(exc).__name__)
+             raise TransferRejected(type(exc).__name__) from exc
+         transfer = self._transfers.get(transfer_id)
+         assert transfer is not None
